@@ -26,6 +26,11 @@ public class EmailWebController {
         helper.setFrom(mail.getFrom());
         helper.setTo(mail.getTo());
         helper.setSubject(mail.getSubject());
+        if (mail.getPriority() != null) {
+            helper.setPriority(mail.getPriority().intValue());        	
+        }
+        
+        helper.setReplyTo(mail.getReplyTo());
         
         helper.setText(mail.getBody(), false);
         
