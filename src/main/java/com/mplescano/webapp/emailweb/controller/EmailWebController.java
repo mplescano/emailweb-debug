@@ -1,8 +1,11 @@
 package com.mplescano.webapp.emailweb.controller;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +18,34 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailWebController {
 
     @Autowired
+    @Qualifier("mailSender")
     private JavaMailSender mailSender;
     
+    /*@Autowired
+    @Qualifier("mailSenderCloud")
+    private JavaMailSender mailSenderCloud;
+    
+    @Autowired
+    @Qualifier("mailSenderCloudUat")
+    private JavaMailSender mailSenderCloudUat;*/
+    
     @PostMapping("/send")
-    public String sendEmail(@RequestBody MailBean mail) throws Exception {
-        MimeMessage message = mailSender.createMimeMessage();
+    public String sendEmail(@Valid @RequestBody MailBean mail) throws Exception {
+        return processSend(mail, mailSender);
+    }
+    
+    /*@PostMapping("/send-cloud")
+    public String sendEmailCloud(@Valid @RequestBody MailBean mail) throws Exception {
+        return processSend(mail, mailSenderCloud);
+    }
+    
+    @PostMapping("/send-cloud-uat")
+    public String sendEmailCloudUat(@Valid @RequestBody MailBean mail) throws Exception {
+        return processSend(mail, mailSenderCloudUat);
+    }*/
+
+	private static String processSend(MailBean mail, JavaMailSender mailSender) throws MessagingException {
+		MimeMessage message = mailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -30,13 +56,15 @@ public class EmailWebController {
             helper.setPriority(mail.getPriority().intValue());        	
         }
         
-        helper.setReplyTo(mail.getReplyTo());
+        if (mail.getReplyTo() != null) {
+            helper.setReplyTo(mail.getReplyTo());        	
+        }
         
         helper.setText(mail.getBody(), false);
         
         mailSender.send(message);
         
         return "ok";
-    }
+	}
 	
 }
