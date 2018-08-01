@@ -3,22 +3,22 @@ package com.mplescano.webapp.emailweb.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.Email;
+/*import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Size;*/
 
 public class MailBean implements Cloneable {
 	
-	@NotBlank
-	@Email
+	/*@NotBlank
+	@Email*/
 	private String from;
 	
-	@NotBlank
-	@Email
+	/*@NotBlank
+	@Email*/
 	private String to;
 
-	@NotBlank
-	@Size(min=2)
+	/*@NotBlank
+	@Size(min=2)*/
 	private String subject;
 	
 	private String body;

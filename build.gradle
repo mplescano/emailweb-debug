@@ -54,9 +54,9 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
         exclude group: 'org.hibernate', module: 'hibernate-validator'
     }
-    compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
-    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.0.2.Final'
-    compile group: 'org.hibernate', name: 'hibernate-validator-annotation-processor', version: '6.0.2.Final'
+    //compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
+    //compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.0.2.Final'
+    //compile group: 'org.hibernate', name: 'hibernate-validator-annotation-processor', version: '6.0.2.Final'
     //compile('org.springframework.boot:spring-boot-starter-mail')
     compile('org.springframework:spring-context-support:4.3.10.RELEASE')
     providedCompile('javax.mail:mail:1.4.7')

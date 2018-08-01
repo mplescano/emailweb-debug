@@ -38,7 +38,7 @@ public class ServiceConfiguration {
     @Bean(name = "mailSession")
     public FactoryBean<Object> mailSessionFactoryBean() {
         JndiObjectFactoryBean mailSessionFactoryBean = new JndiObjectFactoryBean();
-        mailSessionFactoryBean.setJndiName("mail/hbsbpmail");
+        mailSessionFactoryBean.setJndiName("mail/cloudrelay-uat-mail");
         mailSessionFactoryBean.setResourceRef(true);
         mailSessionFactoryBean.setExpectedType(Session.class);
         return mailSessionFactoryBean;

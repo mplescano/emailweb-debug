@@ -2,7 +2,7 @@ package com.mplescano.webapp.emailweb.controller;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.validation.Valid;
+//import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,7 +30,7 @@ public class EmailWebController {
     private JavaMailSender mailSenderCloudUat;*/
     
     @PostMapping("/send")
-    public String sendEmail(@Valid @RequestBody MailBean mail) throws Exception {
+    public String sendEmail(/*@Valid*/ @RequestBody MailBean mail) throws Exception {
         return processSend(mail, mailSender);
     }
     
