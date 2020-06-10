@@ -1,24 +1,11 @@
 package com.mplescano.webapp.emailweb.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/*import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;*/
-
 public class MailBean implements Cloneable {
 	
-	/*@NotBlank
-	@Email*/
 	private String from;
 	
-	/*@NotBlank
-	@Email*/
 	private String to;
 
-	/*@NotBlank
-	@Size(min=2)*/
 	private String subject;
 	
 	private String body;
@@ -27,8 +14,6 @@ public class MailBean implements Cloneable {
 	
 	private String replyTo;
 	
-	//private List<AttachedBean> lstAttached = new ArrayList<AttachedBean>(); 
-		
 	public String getTo() {
 		return to;
 	}
@@ -53,15 +38,6 @@ public class MailBean implements Cloneable {
 	public void setFrom(String from) {
 		this.from = from;
 	}
-	
-	
-	
-	/*public List<AttachedBean> getLstAttached() {
-		return lstAttached;
-	}
-	public void setLstAttached(List<AttachedBean> lstAttached) {
-		this.lstAttached = lstAttached;
-	}*/
 	
 	public Integer getPriority() {
 		return priority;

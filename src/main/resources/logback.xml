@@ -4,19 +4,12 @@
 
     <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy/MM/dd HH:mm:ss} [%p]\\(%method %F:%L\\) - %msg%n%throwable{8}"/>
     <property name="DIGITAL_LOG_PATTERN" value="%d{yyyy/MM/dd HH:mm:ss} [%p]\\(%method %F:%L\\) - %msg%n%throwable{8}"/>
-    <property name="LOG_FILE" value="/scotia/apps/imagine-api/email-web-debug"/>
+    <!-- <property name="LOG_FILE" value="/scotia/apps/imagine-api/email-web-debug"/> -->
 
     <appender name="ROLLING-FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
             <pattern>${DIGITAL_LOG_PATTERN}</pattern>
         </encoder>
-        <!--  
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        -->
         <file>${LOG_FILE}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -37,8 +30,5 @@
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.boot.web.support.ErrorPageFilter" level="OFF"/>
-    <logger name="org.hibernate.validator" level="WARN"/>
-    <logger name="org.hibernate" level="WARN"/>
-    <logger name="org.apache" level="WARN"/>
     <logger name="com.mplescano.webapp.emailweb" level="DEBUG"/>
 </configuration>

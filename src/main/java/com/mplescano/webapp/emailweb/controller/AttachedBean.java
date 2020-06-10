@@ -20,6 +20,4 @@ public class AttachedBean {
 	public void setFileAttached(File fileAttached) {
 		this.fileAttached = fileAttached;
 	}
-	
-
 }

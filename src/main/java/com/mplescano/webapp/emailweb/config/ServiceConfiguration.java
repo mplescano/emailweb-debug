@@ -1,19 +1,19 @@
 package com.mplescano.webapp.emailweb.config;
 
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.jndi.JndiObjectFactoryBean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Map;
+import java.util.Properties;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 
 /**
@@ -22,83 +22,40 @@ import javax.mail.Session;
  * @see https://stackoverflow.com/questions/36475093/spring-boot-a-servletcontext-is-required-to-configure-default-servlet-handling
  */
 @Configuration
+@EnableConfigurationProperties(MailProperties.class)
 public class ServiceConfiguration {
 
-    @Bean(name = "mailSender")
-    public JavaMailSender mailSender(@Qualifier("mailSession") Session session) {
-    	OutputStream os = new WrapperLogbackOutputStream(LoggerFactory.getLogger(ServiceConfiguration.class));
-		PrintStream ps = new PrintStream(os);
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    @Bean
+    @ConditionalOnProperty(prefix = "spring.mail", name = "debug", havingValue = "true", matchIfMissing = false)
+    public Session mailSession(final MailProperties properties) throws Exception {
+        Properties props = asProperties(properties.getProtocol(), properties.getProperties());
+        props.setProperty("mail." + properties.getProtocol() + ".host", properties.getHost());
+        if (properties.getPort() != null) {
+            props.put("mail." + properties.getProtocol() + ".port", properties.getPort()); //TLS Port??
+        }
+        if (properties.getUsername() != null) {
+            props.put("mail." + properties.getProtocol() + ".from", properties.getUsername());
+        }
+        Authenticator auth = new Authenticator() {
+            //override the getPasswordAuthentication method
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(properties.getUsername(), properties.getPassword());
+            }
+        };
+        Session session = Session.getInstance(props, auth);
+        OutputStream os = new WrapperLogbackOutputStream(LoggerFactory.getLogger(ServiceConfiguration.class));
+        PrintStream ps = new PrintStream(os);
         session.setDebug(true);
         session.setDebugOut(ps);
-        mailSender.setSession(session);
-        return mailSender;
-    }
-
-    @Bean(name = "mailSession")
-    public FactoryBean<Object> mailSessionFactoryBean() {
-        JndiObjectFactoryBean mailSessionFactoryBean = new JndiObjectFactoryBean();
-        mailSessionFactoryBean.setJndiName("mail/cloudrelay-uat-mail");
-        mailSessionFactoryBean.setResourceRef(true);
-        mailSessionFactoryBean.setExpectedType(Session.class);
-        return mailSessionFactoryBean;
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public Session mailSession() throws Exception {
-        return (Session) mailSessionFactoryBean().getObject();
+        return session;
     }
     
-    /*@Bean(name = "mailSenderCloud")
-    public JavaMailSender mailSenderCloud(@Qualifier("mailSessionCloud") Session session) {
-    	OutputStream os = new WrapperLogbackOutputStream(LoggerFactory.getLogger(ServiceConfiguration.class));
-		PrintStream ps = new PrintStream(os);
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        session.setDebug(true);
-        session.setDebugOut(ps);
-        mailSender.setSession(session);
-        return mailSender;
-    }
-    
-    @Bean(name = "mailSessionCloud")
-    public FactoryBean<Object> mailSessionCloudFactoryBean() {
-        JndiObjectFactoryBean mailSessionFactoryBean = new JndiObjectFactoryBean();
-        mailSessionFactoryBean.setJndiName("mail/cloudrelaymail");
-        mailSessionFactoryBean.setResourceRef(true);
-        mailSessionFactoryBean.setExpectedType(Session.class);
-        return mailSessionFactoryBean;
+    private Properties asProperties(String protocol, Map<String, String> source) {
+        Properties properties = new Properties();
+        source.entrySet().stream().forEach(itemEntry -> {
+            properties.setProperty(itemEntry.getKey().replace(".smtp.", "." + protocol + "."), itemEntry.getValue());
+        });
+        return properties;
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public Session mailSessionCloud() throws Exception {
-        return (Session) mailSessionCloudFactoryBean().getObject();
-    }
-    
-    @Bean(name = "mailSenderCloudUat")
-    public JavaMailSender mailSenderCloudUat(@Qualifier("mailSessionCloudUat") Session session) {
-    	OutputStream os = new WrapperLogbackOutputStream(LoggerFactory.getLogger(ServiceConfiguration.class));
-		PrintStream ps = new PrintStream(os);
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        session.setDebug(true);
-        session.setDebugOut(ps);
-        mailSender.setSession(session);
-        return mailSender;
-    }
-    
-    @Bean(name = "mailSessionCloudUat")
-    public FactoryBean<Object> mailSessionCloudUatFactoryBean() {
-        JndiObjectFactoryBean mailSessionFactoryBean = new JndiObjectFactoryBean();
-        mailSessionFactoryBean.setJndiName("mail/cloudrelay-uat-mail");
-        mailSessionFactoryBean.setResourceRef(true);
-        mailSessionFactoryBean.setExpectedType(Session.class);
-        return mailSessionFactoryBean;
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public Session mailSessionCloudUat() throws Exception {
-        return (Session) mailSessionCloudUatFactoryBean().getObject();
-    }*/
 }
